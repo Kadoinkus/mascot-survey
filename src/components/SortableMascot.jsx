@@ -21,11 +21,10 @@ export default function SortableMascot({ id, src, rank }) {
     zIndex: isDragging ? 2 : 1
   };
 
-  /* label via bestandsnaam (topic-type.png) */
   const type = id.split("-")[1].replace(".png", "");
-  const label = LABEL_MAP[type] ?? "Mascotte";
-
-  /* éénmalige fallback */
+  // Get the language from localStorage, defaulting to 'nl'
+  const lang = localStorage.getItem('lang') || 'nl';
+  const label = LABEL_MAP[lang]?.[type] ?? "Mascotte";
   const [fallback, setFallback] = useState(false);
 
   return (
@@ -36,44 +35,42 @@ export default function SortableMascot({ id, src, rank }) {
       {...listeners}
       className={`
         relative bg-white rounded-lg shadow-sm
-        flex items-center sm:flex-col gap-2 p-3
-        w-full sm:w-52 border border-gray-100
+        flex flex-col [@media(max-width:640px)_and_(orientation:portrait)]:flex-row items-center
+        w-full border border-gray-100
+        p-3 gap-2
         ${isDragging ? 'shadow-lg' : 'hover:shadow-md'}
         touch-none cursor-grab
       `}
     >
-      {/* nummer-badge */}
-      <span
-        className="
-          absolute -top-2 -left-2 bg-blue-600 text-white
-          w-6 h-6 flex items-center justify-center
-          rounded-full text-sm font-medium shadow-sm
-        "
-      >
+      <span className="
+        absolute -top-2 -left-2 bg-blue-600 text-white
+        w-6 h-6 flex items-center justify-center
+        rounded-full text-sm font-medium shadow-sm z-20
+      ">
         {rank}
       </span>
 
-      {/* afbeelding */}
-      <div
-        className="
-          w-16 h-16
-          sm:w-full sm:h-40
-          bg-gray-50 flex items-center justify-center 
-          rounded-lg overflow-hidden
-          border border-gray-100
-        "
-      >
+      <div className="
+        relative
+        w-full aspect-square
+        [@media(max-width:640px)_and_(orientation:portrait)]:w-16
+        [@media(max-width:640px)_and_(orientation:portrait)]:h-16
+      ">
         <img
-          src={fallback ? "/mascots/missing.png" : src}
+          src={fallback ? "mascots/missing.jpg" : src}
           alt={label}
-          className="w-full h-full object-contain p-2"
+          className="w-full h-full object-contain"
           onError={() => setFallback(true)}
           draggable={false}
         />
       </div>
 
-      {/* label */}
-      <span className="text-sm sm:text-base font-medium truncate sm:mt-1 text-gray-700">
+      <span className="
+        min-h-[1.5rem]
+        [@media(max-width:640px)_and_(orientation:portrait)]:flex-1
+        text-sm font-medium
+        text-gray-700 text-center
+      ">
         {label}
       </span>
     </div>
