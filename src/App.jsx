@@ -8,7 +8,6 @@ import {
 } from '@dnd-kit/core'
 import {
   SortableContext,
-  verticalListSortingStrategy,
   rectSortingStrategy
 } from '@dnd-kit/sortable'
 import { QUESTIONS } from './data/questions'
@@ -17,6 +16,7 @@ import CaptchaVerification from './components/CaptchaVerification'
 import EnvironmentCheck from './components/EnvironmentCheck'
 import { hasUserSubmitted, markAsSubmitted } from './utils/submissionTracker'
 import { translations } from './data/translations'
+import { getItem, setItem } from './utils/storage'
 
 const validateForm = (form) => {
   const errors = {}
@@ -63,7 +63,6 @@ export const validateMascotRankings = (answers, questions) => {
 }
 
 export default function App () {
-  const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 639)
   const [isVerified, setIsVerified] = React.useState(false)
   const [hasSubmitted, setHasSubmitted] = useState(false)
   const [privacyConsent, setPrivacyConsent] = useState(false)
@@ -72,12 +71,12 @@ export default function App () {
   const [order, setOrder] = useState([])
   const [form, setForm] = useState({ age: '', gender: '', education: '' })
   const [submitted, setSubmitted] = useState(false)
-  const [lang, setLang] = useState(() => localStorage.getItem('lang') || 'nl')
+  const [lang, setLang] = useState(() => getItem('lang') || 'nl')
   const [formErrors, setFormErrors] = useState({})
 
   // Update localStorage when language changes
   React.useEffect(() => {
-    localStorage.setItem('lang', lang)
+    setItem('lang', lang)
   }, [lang])
 
   const t = translations[lang]
@@ -128,7 +127,7 @@ export default function App () {
       if (step + 1 < QUESTIONS.length) {
         const nextQ = QUESTIONS[step + 1]
         nextQ.options.forEach(file => {
-          const img = new Image()
+          const img = new window.Image()
           img.src = `mascots/${nextQ.id}/${file}`
         })
       }
@@ -185,7 +184,7 @@ export default function App () {
 
       // Validate mascot rankings
       if (!validateMascotRankings(answers, QUESTIONS)) {
-        alert('Zorg ervoor dat alle mascottes zijn gerangschikt voordat je de enquête verstuurt.')
+        window.alert('Zorg ervoor dat alle mascottes zijn gerangschikt voordat je de enquête verstuurt.')
         return
       }
 
@@ -231,7 +230,7 @@ export default function App () {
       setSubmitted(true)
     } catch (error) {
       console.error('Submission error:', error)
-      alert('Er is een fout opgetreden bij het versturen van de gegevens. Probeer het opnieuw.')
+      window.alert('Er is een fout opgetreden bij het versturen van de gegevens. Probeer het opnieuw.')
     }
   }
 

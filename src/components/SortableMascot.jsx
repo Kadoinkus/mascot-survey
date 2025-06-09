@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { LABEL_MAP } from '../data/questions'
+import { getItem } from '../utils/storage'
 
 export default function SortableMascot ({ id, src, rank }) {
   const {
@@ -20,7 +21,7 @@ export default function SortableMascot ({ id, src, rank }) {
   }
 
   const type = id.split('-')[1].replace('.png', '')
-  const lang = localStorage.getItem('lang') || 'nl'
+  const lang = getItem('lang') || 'nl'
   const label = LABEL_MAP[lang]?.[type] ?? 'Mascotte'
   const [fallback, setFallback] = useState(false)
 

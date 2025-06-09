@@ -1,4 +1,5 @@
 import FingerprintJS from '@fingerprintjs/fingerprintjs'
+import { getJSON, setJSON } from './storage'
 
 let fpPromise = null
 
@@ -19,17 +20,17 @@ export const hasUserSubmitted = async () => {
     return false
   }
   const fingerprint = await getFingerprint()
-  const submissions = JSON.parse(localStorage.getItem('surveySubmissions') || '{}')
+  const submissions = getJSON('surveySubmissions')
   return !!submissions[fingerprint]
 }
 
 // Mark survey as submitted
 export const markAsSubmitted = async () => {
   const fingerprint = await getFingerprint()
-  const submissions = JSON.parse(localStorage.getItem('surveySubmissions') || '{}')
+  const submissions = getJSON('surveySubmissions')
   submissions[fingerprint] = {
     timestamp: new Date().toISOString(),
     userAgent: navigator.userAgent
   }
-  localStorage.setItem('surveySubmissions', JSON.stringify(submissions))
+  setJSON('surveySubmissions', submissions)
 }
